@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark" style="color-scheme: dark;"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Selector de Variadores HNC</title>
+<style>
+:root{--red:#D5232B;--navy:#0F2240;--gray:#64748B;--bg:#EEF1F5;--card:#fff;--line:#E2E8F0;--green:#15803D;--greenbg:#DCFCE7;--amber:#92400E;--amberbg:#FEF3C7;--mut:#F1F5F9;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--navy:#E8EEF8;--gray:#94A3B8;--bg:#0B1220;--card:#131C2E;--line:#25324A;--green:#4ADE80;--greenbg:#12301F;--amber:#FCD34D;--amberbg:#3A2C0B;--mut:#1B2740;color-scheme:dark}}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--navy);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+header{background:var(--red);color:#fff;padding:14px 16px}
+.wrap{max-width:760px;margin:0 auto;padding:0 14px}
+header .wrap{display:flex;align-items:center;gap:12px;padding:0}
+.logo{background:#fff;color:var(--red);font-weight:800;padding:6px 10px;border-radius:8px;font-size:18px;white-space:nowrap}
+.logo small{color:var(--navy);font-weight:600;font-size:12px;margin-left:3px}
+header h1{font-size:18px;margin:0}header p{margin:0;font-size:12px;opacity:.9}
+main{padding:16px 0 40px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.k{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--gray)}
+.pill{font-size:12px;font-weight:700;padding:3px 10px;border-radius:99px;background:var(--greenbg);color:var(--green)}
+.pill.w{background:var(--amberbg);color:var(--amber)}.pill.g{background:var(--mut);color:var(--gray)}
+label{display:block;font-weight:700;margin:14px 0 6px;font-size:14px}
+select,input[type=file],input[type=password]{width:100%;min-height:48px;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--navy);font:inherit}
+.seg{display:inline-flex;border:1.5px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;background:var(--card);color:var(--gray);padding:8px 16px;font:inherit;font-weight:700;min-height:40px;cursor:pointer}
+.seg button.on{background:var(--red);color:#fff}
+.eq{font-size:13px;color:var(--gray);margin-top:6px}
+.btn{width:100%;min-height:52px;margin-top:18px;border:0;border-radius:12px;background:var(--red);color:#fff;font:inherit;font-weight:800;font-size:17px;cursor:pointer}
+.btn.s{background:var(--mut);color:var(--navy);margin-top:10px;min-height:46px}.btn:disabled{opacity:.5}
+.res{border-left:5px solid var(--line)}.res.first{border:2px solid var(--red);border-left-width:6px}
+.badge{display:inline-block;font-size:12px;font-weight:800;padding:4px 10px;border-radius:99px;background:var(--navy);color:var(--bg)}
+.first .badge{background:var(--red);color:#fff}
+.model{font:700 22px ui-monospace,Menlo,Consolas,monospace;margin:8px 0 2px;word-break:break-all}
+.stk{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.stk div{background:var(--mut);border-radius:10px;padding:10px;text-align:center}.stk b{font-size:20px;display:block}
+.inv{color:var(--red);font-weight:800;font-size:20px}
+details{margin-top:8px;font-size:14px}summary{cursor:pointer;font-weight:700;color:var(--gray);min-height:32px}
+.sum{font-size:14px}.sum li{margin:3px 0}.err{color:var(--red);font-weight:700}
+.foot{text-align:center;font-size:12px;color:var(--gray);margin-top:20px}
+a.adm{background:none;border:0;color:var(--gray);text-decoration:underline;font:inherit;font-size:12px;cursor:pointer}
+.pill.r{background:var(--red);color:#fff}
+.cb{position:relative}.cb input{width:100%;min-height:48px;padding:10px 46px 10px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--navy);font:inherit}
+.cb button{position:absolute;right:0;top:0;height:48px;width:46px;border:0;background:none;color:var(--gray);font-size:18px;cursor:pointer}
+#applist{position:absolute;z-index:20;left:0;right:0;top:52px;max-height:280px;overflow:auto;margin:0;padding:4px;list-style:none;background:var(--card);border:1.5px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+#applist li{padding:11px 12px;border-radius:8px;cursor:pointer;font-size:15px}#applist li.on{background:var(--mut)}#applist mark{background:none;color:var(--red);font-weight:800}
+.okmsg{background:var(--greenbg);color:var(--green);font-weight:800;padding:12px;border-radius:10px;margin-top:12px}
+code{background:var(--mut);padding:1px 6px;border-radius:6px;font-size:13px}
+</style></head><body>
+<header><div class="wrap"><span class="logo">HNC<small>Electric</small></span><div><h1>Selector de Variadores HNC</h1><p>Encuentra tu variador en tres pasos</p></div></div></header>
+<main class="wrap">
+<div class="card"><div class="row"><span class="k">Inventario semanal</span><span class="pill" id="invpill">Actualizado</span></div><div id="invinfo" class="eq"><b>Consolidado_StockHNC_091126.xlsx</b><br>306 modelos relacionados · cargado 10 nov 2026, 02:00 p.m. · consolidado del 09 nov 2026<br><span class="err">Admin: 1 no relacionado(s): HV100-090G2</span></div><div id="admin"><p class="eq" style="margin:12px 0 4px">Puedes cargar el consolidado semanal en formato Excel (<code>.xlsx</code> / <code>.xls</code>) enviado por Customer. Requiere contraseña de administrador.</p><button type="button" class="btn" id="upbtn">📄 Cargar Excel de Stock</button><div id="upform" hidden><label for="pw">Contraseña de administrador</label><input type="password" id="pw" autocomplete="current-password"><label for="file">Archivo de consolidado</label><input type="file" id="file" accept=".xlsx,.xls"><div id="sum" class="sum"></div><button class="btn" id="pub" hidden>Aplicar inventario</button></div><div id="okmsg" class="okmsg" hidden></div></div></div>
+<div class="card"><div class="k">Parámetros de selección</div>
+<label for="app">1. Aplicación industrial</label><div class="cb"><input id="app" type="text" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="applist" placeholder="Escribe o despliega para elegir…"><button type="button" id="apptog" aria-label="Mostrar lista">▾</button><ul id="applist" role="listbox" hidden=""></ul></div><div id="apperr" class="err eq" hidden="">Selecciona una aplicación de la lista.</div>
+<div class="row" style="margin-top:14px"><label style="margin:0">2. Potencia del motor</label><div class="seg" id="seg"><button data-u="HP" class="on">HP</button><button data-u="kW">kW</button></div></div>
+<select id="pow" style="margin-top:6px"><option value="0.4">0.5 HP</option><option value="0.75">1 HP</option><option value="1.5">2 HP</option><option value="2.2">3 HP</option><option value="4">5 HP</option><option value="5.5">7.5 HP</option><option value="7.5">10 HP</option><option value="11">15 HP</option><option value="15">20 HP</option><option value="18.5">25 HP</option><option value="22">30 HP</option><option value="30">40 HP</option><option value="37">50 HP</option><option value="45">60 HP</option><option value="55">75 HP</option><option value="75">100 HP</option><option value="93">125 HP</option><option value="110">150 HP</option><option value="132">175 HP</option><option value="160">210 HP</option><option value="185">245 HP</option><option value="200">260 HP</option><option value="220">300 HP</option><option value="250">350 HP</option><option value="280">375 HP</option><option value="315">420 HP</option><option value="355">470 HP</option><option value="400">525 HP</option><option value="450">600 HP</option><option value="500">670 HP</option><option value="560">750 HP</option><option value="630">845 HP</option><option value="710">965 HP</option><option value="800">1090 HP</option></select><div class="eq" id="eq">Equivale a 0.4 kW</div>
+<label for="volt">3. Voltaje de alimentación</label><select id="volt"><option>Monofásico 120V</option><option>Monofásico 220V</option><option>Trifásico 220V</option><option>Trifásico 380-440V</option><option>Trifásico 460-480V</option></select>
+<button class="btn" id="go">Consultar recomendaciones</button></div>
+<div id="out"></div>
+
+<div class="foot">La compatibilidad técnica se define por aplicación, potencia y voltaje; el inventario no la modifica. Las existencias son informativas.</div>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script type="module">
+let D;
+try{const[t,r]=await Promise.all([fetch('tecnica.json').then(x=>{if(!x.ok)throw 0;return x.json()}),fetch('/api/inventario').then(x=>{if(!x.ok)throw 0;return x.json()}).catch(()=>({inv:{},meta:null,error:1}))]);
+D={...t,inv:r.inv||{},meta:r.meta||null,invError:!!r.error}}catch(e){document.body.innerHTML='<p style="padding:20px;font-family:sans-serif">No se pudo cargar la información técnica. Intenta de nuevo en unos minutos.</p>';throw e}
+/*CORE*/
+function suffix(s,v){if(v==='Monofásico 220V')return s==='HV10'?'G1-2':'G1';return D.sfx[v]}
+function inRange(s,v,k){return D.rng.some(r=>r[0]===s&&r[1]===v&&k>=r[2]&&k<=r[3])}
+function select(name,k,v){const app=D.apps.find(a=>a.n===name);if(!app)return[];const code=D.kw.find(x=>x.k===k).c;
+return Object.entries(app.p).sort((a,b)=>a[1]-b[1]).map(([s,pos])=>{if(!inRange(s,v,k))return{pos,s,valid:false};const m=s+'-'+code+suffix(s,v);return{pos,s,valid:true,m,inv:D.inv[m]||null}})}
+function theo(){const t=new Set();D.rng.forEach(([s,v,a,b])=>D.kw.forEach(x=>{if(x.k>=a&&x.k<=b)t.add(s+'-'+x.c+suffix(s,v))}));return t}
+/*ENDCORE*/
+const $=s=>document.querySelector(s);let unit='HP';
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt=d=>new Date(d).toLocaleString('es-MX',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+const hpOf=k=>D.kw.find(x=>x.k===k).hp;
+function fill(){
+$('#volt').innerHTML=D.volts.map(v=>`<option>${esc(v)}</option>`).join('');pow()}
+function pow(){const keep=$('#pow').value;$('#pow').innerHTML=D.kw.map(x=>`<option value="${x.k}">${unit==='HP'?x.hp+' HP':x.k+' kW'}</option>`).join('');if(keep)$('#pow').value=keep;eq()}
+function eq(){const k=+$('#pow').value;$('#eq').textContent=k?(unit==='HP'?'Equivale a '+k+' kW':'Equivale a '+hpOf(k)+' HP'):''}
+function mon(d){const x=new Date(d);x.setUTCDate(x.getUTCDate()-((x.getUTCDay()+6)%7));x.setUTCHours(0,0,0,0);return x.getTime()}
+function curWeek(n=new Date()){return mon(Date.UTC(n.getFullYear(),n.getMonth(),n.getDate()))}
+function covers(m,n){return !!m&&mon(m.fileDate||m.at)===curWeek(n)}
+function hdr(){const m=D.meta,ok=covers(m);const p=$('#invpill');p.textContent=ok?'Actualizado':'Actualizar';p.className='pill'+(ok?'':' r');$('#invinfo').innerHTML=m?`<b>${esc(m.file)}</b><br>${m.matched} modelos relacionados · cargado ${fmt(m.at)}${m.fileDate?' · consolidado del '+new Date(m.fileDate).toLocaleDateString('es-MX',{day:'2-digit',month:'short',year:'numeric',timeZone:'UTC'}):''}${ok?'':'<br><span class="err">Este consolidado no corresponde a la semana actual. Actualiza el inventario.</span>'}`:'<span class="err">No hay consolidado cargado.</span>'}
+function card(r,app,k,v){const first=r.pos===1;const lab=['','1ª opción recomendada','2ª opción alternativa','3ª opción de reserva'][r.pos];
+if(!r.valid)return`<div class="card res"><span class="badge">${lab}</span> <b style="float:right">Serie ${r.s}</b><div class="model err">NO VÁLIDO</div><div class="eq">La serie ${r.s} no cubre ${k} kW (${hpOf(k)} HP) en ${esc(v)}.</div></div>`;
+const i=r.inv;let st,body;
+if(!i){st='<span class="pill g">Sin información de inventario</span>';body=`<div class="stk"><div><span class="k">Stock Jalisco</span><b>—</b></div><div><span class="k">Stock EdoMex</span><b>—</b></div></div>`}
+else{const t=i[0]+i[1];st=t>0?'<span class="pill">Disponible</span>':'<span class="pill w">Consultar lote / Importación</span>';body=`<div class="stk"><div><span class="k">Stock Jalisco</span><b>${i[0]} pza(s)</b></div><div><span class="k">Stock EdoMex</span><b>${i[1]} pza(s)</b></div></div>`}
+return`<div class="card res ${first?'first':''}"><div class="row"><span class="badge">${lab}</span><b>Serie ${r.s}</b></div><div class="model">${r.m}</div>${st}${body}<div class="eq">${esc(v)} · ${k} kW / ${hpOf(k)} HP</div><details><summary>Detalles técnicos</summary><div>${i&&i[2]?esc(i[2]):'Descripción no disponible en el consolidado.'}<br>Aplicación: ${esc(app)} · Prioridad ${r.pos} · Serie ${r.s}</div></details></div>`}
+function go(){if(!appSel){$('#apperr').hidden=false;$('#app').focus();return}$('#apperr').hidden=true;const a=appSel,k=+$('#pow').value,v=$('#volt').value;const rs=select(a,k,v);
+$('#out').innerHTML=rs.some(r=>r.valid)?rs.map(r=>card(r,a,k,v)).join(''):`<div class="card"><b class="err">Sin coincidencia exacta.</b><div class="eq">Ninguna serie de la matriz cubre ${k} kW en ${esc(v)} para ${esc(a)}. No se recomienda ningún equipo sin respaldo técnico.</div></div>`;
+$('#out').scrollIntoView({behavior:'smooth'})}
+$('#seg').onclick=e=>{const u=e.target.dataset.u;if(!u)return;unit=u;document.querySelectorAll('#seg button').forEach(b=>b.classList.toggle('on',b.dataset.u===u));pow()};
+$('#pow').onchange=eq;$('#go').onclick=go;fill();hdr();if(D.invError)$('#invinfo').innerHTML+='<br><span class="err">No se pudo consultar el inventario en este momento.</span>';
+/* Combo de aplicaciones */
+const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+let appSel=null,act=-1,shown=[];
+function openList(all){const q=norm($('#app').value.trim());shown=all||!q?D.apps:D.apps.filter(a=>norm(a.n).includes(q));
+$('#applist').innerHTML=shown.length?shown.map((a,i)=>{let t=esc(a.n);if(!all&&q){const p=norm(a.n).indexOf(q);if(p>=0&&norm(a.n).length===a.n.length)t=esc(a.n.slice(0,p))+'<mark>'+esc(a.n.slice(p,p+q.length))+'</mark>'+esc(a.n.slice(p+q.length))}return`<li role="option" data-i="${i}" class="${i===act?'on':''}">${t}</li>`}).join(''):'<li class="eq">Sin resultados</li>';
+$('#applist').hidden=false;$('#app').setAttribute('aria-expanded','true')}
+function closeList(){$('#applist').hidden=true;$('#app').setAttribute('aria-expanded','false');act=-1}
+function pick(i){const a=shown[i];if(!a)return;appSel=a.n;$('#app').value=a.n;$('#apperr').hidden=true;closeList()}
+$('#app').oninput=()=>{const q=norm($('#app').value.trim());const ex=D.apps.find(a=>norm(a.n)===q);appSel=ex?ex.n:null;act=-1;openList(false)};
+$('#app').onfocus=()=>{$('#app').select();act=-1;openList(true)};
+$('#app').onkeydown=e=>{const L=$('#applist');if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();if(L.hidden)openList(true);act=Math.max(0,Math.min(shown.length-1,act+(e.key==='ArrowDown'?1:-1)));openList(!$('#app').value||appSel===$('#app').value&&shown.length===D.apps.length);const li=L.querySelector('li.on');if(li)li.scrollIntoView({block:'nearest'})}
+else if(e.key==='Enter'){if(!L.hidden){e.preventDefault();if(act>=0)pick(act);else if(shown.length===1)pick(0);else closeList()}}else if(e.key==='Escape')closeList()};
+$('#applist').onmousedown=e=>{e.preventDefault();const li=e.target.closest('li[data-i]');if(li)pick(+li.dataset.i)};
+$('#apptog').onclick=()=>{if($('#applist').hidden){act=-1;openList(true);$('#app').focus()}else closeList()};
+document.addEventListener('mousedown',e=>{if(!e.target.closest('.cb'))closeList()});
+document.addEventListener('touchstart',e=>{if(!e.target.closest('.cb'))closeList()},{passive:true});
+/* Administración: la contraseña se valida en el servidor (/api/inventario) */
+let pending=null;
+async function parse(f){const wb=XLSX.read(await f.arrayBuffer(),{cellNF:true});const T=theo(),inv={},seen={},err=[],warn=[],un=[];let rows=0,skip=0,fd=null,sheets=0;
+for(const n of wb.SheetNames){const R=XLSX.utils.sheet_to_json(wb.Sheets[n],{header:1,raw:true,defval:null});let hi=-1,c;
+for(let i=0;i<Math.min(R.length,40)&&hi<0;i++){const h=(R[i]||[]).map(x=>String(x==null?'':x).trim().toLowerCase());const e=h.indexOf('equipo'),j=h.findIndex(x=>/jal/.test(x)),m=h.findIndex(x=>/edo/.test(x));if(e>=0&&j>=0&&m>=0){hi=i;c={e,j,m,d:h.findIndex(x=>/descrip/.test(x))}}}
+if(hi<0)continue;sheets++;if(!fd){const W=wb.Sheets[n],rg=XLSX.utils.decode_range(W['!ref']);for(let i=0;i<hi&&!fd;i++)for(let j=0;j<16&&!fd;j++){const q=W[XLSX.utils.encode_cell({r:rg.s.r+i,c:rg.s.c+j})];if(q&&q.t==='n'&&q.z&&XLSX.SSF.is_date(q.z)){const d=XLSX.SSF.parse_date_code(q.v);fd=new Date(Date.UTC(d.y,d.m-1,d.d)).toISOString()}}}
+for(let i=hi+1;i<R.length;i++){const r=R[i];if(!r||r[c.e]==null)continue;const m=String(r[c.e]).trim().toUpperCase();rows++;
+if(!/^HV(10|100|480|610|320)-/.test(m)){if(/^HV/.test(m))skip++;continue}
+if(!T.has(m)){if(/^HV(10|100|480|610|320)-[0-9R]+G/.test(m))un.push(m);else skip++;continue}
+const a=r[c.j],b=r[c.m];if(typeof a!=='number'||typeof b!=='number'||a<0||b<0){err.push(`${m}: existencias no numéricas o negativas (fila ${i+1})`);continue}
+if(seen[m]){err.push(`${m}: duplicado (fila ${i+1})`);continue}seen[m]=1;inv[m]=[a,b,c.d>=0&&r[c.d]?String(r[c.d]).trim():'']}}
+if(!sheets)err.push('No se encontró una hoja con las columnas Equipo, Stock JAL y Stock EdoMex.');
+const matched=Object.keys(inv).length;if(sheets&&!matched)err.push('Ningún número de parte se relacionó con la matriz técnica.');
+if(un.length)warn.push(`${un.length} variador(es) de series de la matriz no se relacionaron: ${un.join(', ')}`);
+return{file:f.name,rows,matched,theo:T.size,missing:T.size-matched,skip,inv,err,warn,fd,un}}
+$('#upbtn').onclick=()=>{$('#upform').hidden=!$('#upform').hidden};
+$('#file').onchange=async e=>{const f=e.target.files[0];pending=null;$('#pub').hidden=true;$('#okmsg').hidden=true;if(!f)return;$('#sum').textContent='Validando…';
+try{const p=await parse(f);const ok=!p.err.length;const fecha=p.fd?new Date(p.fd).toLocaleDateString('es-MX',{day:'2-digit',month:'short',year:'numeric',timeZone:'UTC'}):'no detectada';
+$('#sum').innerHTML=`<ul><li>Archivo: <b>${esc(p.file)}</b> (consolidado del ${fecha})</li><li>Registros leídos: ${p.rows}</li><li>Modelos relacionados con la matriz: <b>${p.matched}</b> de ${p.theo}</li><li>Modelos técnicos sin registro (quedarán como “Sin información de inventario”): ${p.missing}</li><li>Registros HV de otras series o accesorios omitidos: ${p.skip}</li>${covers({fileDate:p.fd,at:new Date().toISOString()})?'':`<li>⚠ La fecha del consolidado (${fecha}) no corresponde a la semana actual: el estado quedará en “Actualizar”.</li>`}${p.warn.map(w=>`<li>⚠ ${esc(w)}</li>`).join('')}${p.err.map(w=>`<li class="err">✖ ${esc(w)}</li>`).join('')}</ul>${ok?'':'<div class="err">El archivo no pasó la validación. Se conserva el inventario anterior.</div>'}`;
+if(ok){pending=p;$('#pub').hidden=false}}catch(x){$('#sum').innerHTML='<div class="err">No se pudo leer el archivo. Se conserva el inventario anterior.</div>'}};
+$('#pub').onclick=async()=>{const pw=$('#pw').value;if(!pending)return;if(!pw){$('#sum').innerHTML+='<div class="err">Escribe la contraseña de administrador.</div>';return}
+$('#pub').disabled=true;const p=pending;
+try{const r=await fetch('/api/inventario',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+pw},body:JSON.stringify({inv:p.inv,meta:{file:p.file,fileDate:p.fd,rows:p.rows,unmatched:p.un}})});
+const j=await r.json().catch(()=>({}));if(r.status===401)throw new Error('Contraseña incorrecta.');if(!r.ok)throw new Error(j.detail||'El servidor rechazó el archivo.');
+D.inv=p.inv;D.meta=j.meta;hdr();pending=null;$('#pub').hidden=true;$('#upform').hidden=true;$('#file').value='';$('#pw').value='';$('#sum').innerHTML='';const k=$('#okmsg');k.hidden=false;k.textContent='✔ ¡Cargado exitosamente! '+p.file}
+catch(x){$('#sum').innerHTML+='<div class="err">'+esc(x.message||'No se pudo guardar.')+' Se conserva el inventario anterior.</div>'}$('#pub').disabled=false};
+</script></body></html>
