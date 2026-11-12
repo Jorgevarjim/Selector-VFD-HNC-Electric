@@ -2,6 +2,9 @@
 <html lang="es" data-theme="dark" style="color-scheme: dark;"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Selector de Variadores HNC</title>
+<link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#D5232B">
+<link rel="icon" type="image/png" href="/icon-192.png"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Selector HNC"><meta name="apple-mobile-web-app-status-bar-style" content="default">
 <style>
 :root{--red:#D5232B;--navy:#0F2240;--gray:#64748B;--bg:#EEF1F5;--card:#fff;--line:#E2E8F0;--green:#15803D;--greenbg:#DCFCE7;--amber:#92400E;--amberbg:#FEF3C7;--mut:#F1F5F9;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--navy:#E8EEF8;--gray:#94A3B8;--bg:#0B1220;--card:#131C2E;--line:#25324A;--green:#4ADE80;--greenbg:#12301F;--amber:#FCD34D;--amberbg:#3A2C0B;--mut:#1B2740;color-scheme:dark}}
@@ -45,9 +48,12 @@ a.adm{background:none;border:0;color:var(--gray);text-decoration:underline;font:
 #applist li{padding:11px 12px;border-radius:8px;cursor:pointer;font-size:15px}#applist li.on{background:var(--mut)}#applist mark{background:none;color:var(--red);font-weight:800}
 .okmsg{background:var(--greenbg);color:var(--green);font-weight:800;padding:12px;border-radius:10px;margin-top:12px}
 code{background:var(--mut);padding:1px 6px;border-radius:6px;font-size:13px}
+img.logo{height:44px;width:auto;background:#fff;padding:5px 10px;border-radius:8px;display:block}
+.inst{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:14px}.inst .btn{width:auto;margin:0;min-height:40px;padding:0 16px;font-size:15px}.inst .x{background:none;border:0;color:var(--gray);text-decoration:underline;font:inherit;font-size:13px;cursor:pointer;min-height:40px}
 </style></head><body>
-<header><div class="wrap"><span class="logo">HNC<small>Electric</small></span><div><h1>Selector de Variadores HNC</h1><p>Encuentra tu variador en tres pasos</p></div></div></header>
+<header><div class="wrap"><img class="logo" src="/logo.png" alt="HNC Electric México" width="105" height="44"><div><h1>Selector de Variadores HNC</h1><p>Encuentra tu variador en tres pasos</p></div></div></header>
 <main class="wrap">
+<div id="inst" class="card inst" hidden></div>
 <div class="card"><div class="row"><span class="k">Inventario semanal</span><span class="pill" id="invpill">Actualizado</span></div><div id="invinfo" class="eq"><b>Consolidado_StockHNC_091126.xlsx</b><br>306 modelos relacionados · cargado 10 nov 2026, 02:00 p.m. · consolidado del 09 nov 2026<br><span class="err">Admin: 1 no relacionado(s): HV100-090G2</span></div><div id="admin"><p class="eq" style="margin:12px 0 4px">Puedes cargar el consolidado semanal en formato Excel (<code>.xlsx</code> / <code>.xls</code>) enviado por Customer. Requiere contraseña de administrador.</p><button type="button" class="btn" id="upbtn">📄 Cargar Excel de Stock</button><div id="upform" hidden><label for="pw">Contraseña de administrador</label><input type="password" id="pw" autocomplete="current-password"><label for="file">Archivo de consolidado</label><input type="file" id="file" accept=".xlsx,.xls"><div id="sum" class="sum"></div><button class="btn" id="pub" hidden>Aplicar inventario</button></div><div id="okmsg" class="okmsg" hidden></div></div></div>
 <div class="card"><div class="k">Parámetros de selección</div>
 <label for="app">1. Aplicación industrial</label><div class="cb"><input id="app" type="text" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="applist" placeholder="Escribe o despliega para elegir…"><button type="button" id="apptog" aria-label="Mostrar lista">▾</button><ul id="applist" role="listbox" hidden=""></ul></div><div id="apperr" class="err eq" hidden="">Selecciona una aplicación de la lista.</div>
@@ -62,8 +68,8 @@ code{background:var(--mut);padding:1px 6px;border-radius:6px;font-size:13px}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script type="module">
 let D;
-try{const[t,r]=await Promise.all([fetch('tecnica.json').then(x=>{if(!x.ok)throw 0;return x.json()}),fetch('/api/inventario').then(x=>{if(!x.ok)throw 0;return x.json()}).catch(()=>({inv:{},meta:null,error:1}))]);
-D={...t,inv:r.inv||{},meta:r.meta||null,invError:!!r.error}}catch(e){document.body.innerHTML='<p style="padding:20px;font-family:sans-serif">No se pudo cargar la información técnica. Intenta de nuevo en unos minutos.</p>';throw e}
+try{const[t,r]=await Promise.all([fetch('tecnica.json').then(x=>{if(!x.ok)throw 0;return x.json()}),fetch('/api/inventario').then(async x=>{if(!x.ok)throw 0;const j=await x.json();j.cached=x.headers.get('x-hnc-cache')==='1';return j}).catch(()=>({inv:{},meta:null,error:1}))]);
+D={...t,inv:r.inv||{},meta:r.meta||null,invError:!!r.error,cached:!!r.cached}}catch(e){document.body.innerHTML='<p style="padding:20px;font-family:sans-serif">No se pudo cargar la información técnica. Intenta de nuevo en unos minutos.</p>';throw e}
 /*CORE*/
 function suffix(s,v){if(v==='Monofásico 220V')return s==='HV10'?'G1-2':'G1';return D.sfx[v]}
 function inRange(s,v,k){return D.rng.some(r=>r[0]===s&&r[1]===v&&k>=r[2]&&k<=r[3])}
@@ -93,7 +99,18 @@ function go(){if(!appSel){$('#apperr').hidden=false;$('#app').focus();return}$('
 $('#out').innerHTML=rs.some(r=>r.valid)?rs.map(r=>card(r,a,k,v)).join(''):`<div class="card"><b class="err">Sin coincidencia exacta.</b><div class="eq">Ninguna serie de la matriz cubre ${k} kW en ${esc(v)} para ${esc(a)}. No se recomienda ningún equipo sin respaldo técnico.</div></div>`;
 $('#out').scrollIntoView({behavior:'smooth'})}
 $('#seg').onclick=e=>{const u=e.target.dataset.u;if(!u)return;unit=u;document.querySelectorAll('#seg button').forEach(b=>b.classList.toggle('on',b.dataset.u===u));pow()};
-$('#pow').onchange=eq;$('#go').onclick=go;fill();hdr();if(D.invError)$('#invinfo').innerHTML+='<br><span class="err">No se pudo consultar el inventario en este momento.</span>';
+$('#pow').onchange=eq;$('#go').onclick=go;function notes(){const i=$('#invinfo');if(D.invError)i.innerHTML+='<br><span class="err">No se pudo consultar el inventario en este momento.</span>';else if(D.cached&&D.meta)i.innerHTML+='<br><span class="err">Sin conexión: se muestran las existencias guardadas en este dispositivo (cargadas '+fmt(D.meta.at)+'). Pueden haber cambiado.</span>'}
+fill();hdr();notes();
+let lastLoad=Date.now();
+async function refreshInv(){try{const x=await fetch('/api/inventario');if(!x.ok)return;const j=await x.json();D.inv=j.inv||{};D.meta=j.meta||null;D.cached=x.headers.get('x-hnc-cache')==='1';D.invError=false;lastLoad=Date.now()}catch(e){}hdr();notes()}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)return;if(Date.now()-lastLoad>600000)refreshInv();else{hdr();notes()}});
+/* Instalación como app */
+const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;let dip=null,gone=false;
+try{gone=localStorage.getItem('hncInst')==='1'}catch(e){}
+function inst(msg,btn){if(standalone||gone)return;const b=$('#inst');b.innerHTML='<span style="flex:1 1 200px">'+msg+'</span>'+(btn?'<button class="btn" id="instgo">Instalar app</button>':'')+'<button class="x" id="instx">Ahora no</button>';b.hidden=false;
+$('#instx').onclick=()=>{b.hidden=true;try{localStorage.setItem('hncInst','1')}catch(e){}};if(btn)$('#instgo').onclick=async()=>{b.hidden=true;dip.prompt();await dip.userChoice.catch(()=>{})}}
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();dip=e;inst('<b>Instala el Selector HNC</b> en tu teléfono y úsalo como app, también sin internet.',true)});
+if(/iphone|ipad|ipod/i.test(navigator.userAgent))inst('<b>Instala el Selector HNC</b>: toca <b>Compartir</b> (cuadro con flecha) y luego <b>“Agregar a pantalla de inicio”</b>.',false);
 /* Combo de aplicaciones */
 const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 let appSel=null,act=-1,shown=[];
@@ -136,4 +153,4 @@ try{const r=await fetch('/api/inventario',{method:'POST',headers:{'content-type'
 const j=await r.json().catch(()=>({}));if(r.status===401)throw new Error('Contraseña incorrecta.');if(!r.ok)throw new Error(j.detail||'El servidor rechazó el archivo.');
 D.inv=p.inv;D.meta=j.meta;hdr();pending=null;$('#pub').hidden=true;$('#upform').hidden=true;$('#file').value='';$('#pw').value='';$('#sum').innerHTML='';const k=$('#okmsg');k.hidden=false;k.textContent='✔ ¡Cargado exitosamente! '+p.file}
 catch(x){$('#sum').innerHTML+='<div class="err">'+esc(x.message||'No se pudo guardar.')+' Se conserva el inventario anterior.</div>'}$('#pub').disabled=false};
-</script></body></html>
+</script><script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}))</script></body></html>

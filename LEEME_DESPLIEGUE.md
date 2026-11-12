@@ -10,7 +10,9 @@ Los pasos describen los menús de Cloudflare y GitHub tal como los conozco; si a
 | `public/tecnica.json` | **Base técnica** (101 aplicaciones, 34 potencias con HP, 5 voltajes, rangos). Separada del inventario. |
 | `functions/api/inventario.js` | **API del inventario**: lectura pública y escritura protegida con contraseña. |
 | `public/_headers` | Cabeceras de seguridad. |
-| `tests/api.test.mjs` | Pruebas automáticas de la API (`node tests/api.test.mjs`). |
+| `public/sw.js`, `public/manifest.webmanifest` | **App instalable y modo sin conexión** (PWA). |
+| `public/logo.png`, `icon-*.png`, `apple-touch-icon.png` | Logo e íconos de la app. |
+| `tests/api.test.mjs`, `tests/sw.test.mjs` | Pruebas automáticas de la API y del modo sin conexión. |
 
 El inventario se guarda en Cloudflare KV. Una carga nueva **reemplaza** el inventario anterior y deja un respaldo en la llave `inventario_anterior`.
 
@@ -57,7 +59,7 @@ Si el archivo falla la validación (columnas faltantes, existencias no numérica
 - **Cambiar la contraseña:** edita el secreto `ADMIN_PASSWORD` y redespliega.
 - **Actualizar aplicaciones, potencias o rangos:** se editan en `public/tecnica.json`; al guardar el cambio en GitHub, Cloudflare publica solo. Pide ayuda para generarlo desde el Excel y así evitar errores de captura.
 - **Recuperar el inventario anterior:** en KV, la llave `inventario_anterior` contiene la versión previa a la última carga.
-- **Pruebas de la API:** `node tests/api.test.mjs`.
+- **Pruebas:** `node tests/api.test.mjs` y `node tests/sw.test.mjs`.
 
 ## Seguridad: puntos a considerar
 - La contraseña viaja por HTTPS y se compara en el servidor. Usa una larga y única. Si más adelante quieres reforzarla, Cloudflare Access (gratis hasta 50 usuarios) permite pedir inicio de sesión corporativo antes de aceptar cargas.
@@ -71,3 +73,24 @@ Si el archivo falla la validación (columnas faltantes, existencias no numérica
 | Al aplicar: "Falta configurar el KV o la contraseña" | Falta el binding o el secreto `ADMIN_PASSWORD` (pasos 3 y 4). |
 | "Contraseña incorrecta" con la correcta | El secreto se guardó en Preview y no en Production, o falta redesplegar. |
 | La página queda en blanco | `Build output directory` no es `public`, o las carpetas no se subieron con su estructura. |
+
+
+## Instalación como app en celulares (PWA)
+Abre la dirección del selector **una vez con internet** y luego instálala:
+- **Android (Chrome):** aparece el aviso "Instalar app"; si no, menú ⋮ → *Agregar a pantalla principal* / *Instalar aplicación*.
+- **iPhone (Safari, no Chrome):** botón Compartir → *Agregar a pantalla de inicio*.
+
+Mensaje listo para enviar a los distribuidores:
+> Abre este enlace en tu celular: **[tu dirección]**. Android: toca "Instalar app". iPhone: en Safari, Compartir → "Agregar a pantalla de inicio". Después ábrela desde el ícono HNC, como cualquier app.
+
+**Sin internet:** la app abre y selecciona equipos con la última base técnica guardada. El inventario que muestre será el último que ese teléfono descargó y aparecerá un aviso rojo con la fecha de esa carga ("Sin conexión… pueden haber cambiado"). Con internet se actualiza sola, al abrirla o al volver a ella después de 10 minutos. La **carga de inventario siempre requiere internet**.
+
+**Actualizar la app:** sustituye los archivos en GitHub (Add file → Upload files, mismas rutas) y Cloudflare publica solo. Los teléfonos reciben los cambios la siguiente vez que abran la app con internet (si no los ven, cerrarla por completo y abrirla de nuevo). Si cambias el logo o los íconos, sube el número de `V` en `public/sw.js` (por ejemplo `hnc-v2`).
+
+**Para esta actualización** reemplaza en tu repositorio: `public/index.html`, `public/_headers`, y agrega `public/sw.js`, `public/manifest.webmanifest`, `public/logo.png`, `public/icon-192.png`, `public/icon-512.png`, `public/icon-maskable-512.png`, `public/apple-touch-icon.png` y la carpeta `tests` actualizada.
+
+| Síntoma (app) | Causa probable |
+|---|---|
+| No aparece "Instalar app" en Android | Chrome solo lo ofrece tras abrir el sitio con internet y por HTTPS; prueba el menú ⋮. Si ya la instaló o rechazó el aviso, usa el menú. |
+| En iPhone no hay opción | Debe abrirse en Safari. |
+| Sigue viendo la versión anterior | Cerrar la app por completo y abrir con internet; si persiste, borrar datos del sitio. |
