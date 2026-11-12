@@ -1,15 +1,13 @@
 // Service worker del Selector HNC: permite usarlo sin conexión.
 // - Página, base técnica e inventario: primero red (4 s) y, si falla, la última copia guardada.
-// - Logo, íconos y librería de Excel: primero copia local.
+// - Logo e íconos: primero copia local.
 // Al publicar cambios importantes de imágenes, sube el número de versión V.
-const V = 'hnc-v1';
+const V = 'hnc-v2';
 const SHELL = ['/', '/tecnica.json', '/manifest.webmanifest', '/logo.png', '/icon-192.png', '/icon-512.png'];
-const XLSX = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
 
 self.addEventListener('install', e => e.waitUntil((async () => {
   const c = await caches.open(V);
   await c.addAll(SHELL);
-  try { await c.add(new Request(XLSX, { mode: 'no-cors' })); } catch (_) {}
   await self.skipWaiting();
 })()));
 
@@ -55,5 +53,5 @@ self.addEventListener('fetch', e => {
     if (r.mode === 'navigate' || u.pathname === '/tecnica.json' || u.pathname === '/api/inventario') return e.respondWith(netFirst(r));
     return e.respondWith(cacheFirst(r));
   }
-  if (u.hostname === 'cdnjs.cloudflare.com') return e.respondWith(cacheFirst(r));
+  // Recursos de otros dominios (librería de Excel) los gestiona el navegador directamente.
 });

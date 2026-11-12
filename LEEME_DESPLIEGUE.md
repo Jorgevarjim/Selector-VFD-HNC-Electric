@@ -12,7 +12,7 @@ Los pasos describen los menús de Cloudflare y GitHub tal como los conozco; si a
 | `public/_headers` | Cabeceras de seguridad. |
 | `public/sw.js`, `public/manifest.webmanifest` | **App instalable y modo sin conexión** (PWA). |
 | `public/logo.png`, `icon-*.png`, `apple-touch-icon.png` | Logo e íconos de la app. |
-| `tests/api.test.mjs`, `tests/sw.test.mjs` | Pruebas automáticas de la API y del modo sin conexión. |
+| `tests/*.test.mjs` | Pruebas automáticas de la API, del modo sin conexión y del lector de Excel. |
 
 El inventario se guarda en Cloudflare KV. Una carga nueva **reemplaza** el inventario anterior y deja un respaldo en la llave `inventario_anterior`.
 
@@ -59,7 +59,7 @@ Si el archivo falla la validación (columnas faltantes, existencias no numérica
 - **Cambiar la contraseña:** edita el secreto `ADMIN_PASSWORD` y redespliega.
 - **Actualizar aplicaciones, potencias o rangos:** se editan en `public/tecnica.json`; al guardar el cambio en GitHub, Cloudflare publica solo. Pide ayuda para generarlo desde el Excel y así evitar errores de captura.
 - **Recuperar el inventario anterior:** en KV, la llave `inventario_anterior` contiene la versión previa a la última carga.
-- **Pruebas:** `node tests/api.test.mjs` y `node tests/sw.test.mjs`.
+- **Pruebas:** `node tests/api.test.mjs`, `node tests/sw.test.mjs` y `node tests/lector.test.mjs`.
 
 ## Seguridad: puntos a considerar
 - La contraseña viaja por HTTPS y se compara en el servidor. Usa una larga y única. Si más adelante quieres reforzarla, Cloudflare Access (gratis hasta 50 usuarios) permite pedir inicio de sesión corporativo antes de aceptar cargas.
@@ -87,10 +87,11 @@ Mensaje listo para enviar a los distribuidores:
 
 **Actualizar la app:** sustituye los archivos en GitHub (Add file → Upload files, mismas rutas) y Cloudflare publica solo. Los teléfonos reciben los cambios la siguiente vez que abran la app con internet (si no los ven, cerrarla por completo y abrirla de nuevo). Si cambias el logo o los íconos, sube el número de `V` en `public/sw.js` (por ejemplo `hnc-v2`).
 
-**Para esta actualización** reemplaza en tu repositorio: `public/index.html`, `public/_headers`, y agrega `public/sw.js`, `public/manifest.webmanifest`, `public/logo.png`, `public/icon-192.png`, `public/icon-512.png`, `public/icon-maskable-512.png`, `public/apple-touch-icon.png` y la carpeta `tests` actualizada.
+**Para esta actualización (corrección de la carga del Excel)** reemplaza en tu repositorio estos 3 archivos en `public/`: `index.html`, `sw.js` y `_headers`, y agrega `tests/lector.test.mjs`.
 
 | Síntoma (app) | Causa probable |
 |---|---|
 | No aparece "Instalar app" en Android | Chrome solo lo ofrece tras abrir el sitio con internet y por HTTPS; prueba el menú ⋮. Si ya la instaló o rechazó el aviso, usa el menú. |
 | En iPhone no hay opción | Debe abrirse en Safari. |
+| Al cargar el Excel: "No se pudo leer el archivo…" | Lee el motivo que aparece debajo ("Detalle técnico"). Si dice que no se pudo abrir el archivo: ciérralo en Excel o descárgalo desde Drive/OneDrive/WhatsApp al dispositivo y elígelo de nuevo. Si dice que no se pudo cargar el lector de Excel: falta internet. |
 | Sigue viendo la versión anterior | Cerrar la app por completo y abrir con internet; si persiste, borrar datos del sitio. |
